@@ -1,0 +1,150 @@
+
+<link rel="import" href="/bower_components/polymer/polymer.html">
+
+<polymer-element name="tsante-scrollarea" attributes="vanishing forced pos">
+    <template>
+        <style>
+            :host {
+                position: relative;
+                display:block;
+                overflow:hidden;
+            }
+            .scrollable {
+                overflow-y:scroll;
+                overflow-x: hidden;
+                height:100%;
+                -webkit-overflow-scrolling: touch;
+            }
+            .scrollBar {
+                position: absolute;
+                width: 8px;
+                border: 1px solid rgba(255, 215, 0, 0);
+                height: 100%;
+                border-radius: 4px;
+                top: 0px;
+                opacity: 0.7;
+                display:none;
+            }
+            .scrollPos {
+                position:absolute;
+                background: rgba(131, 167, 219, 0);
+                border-radius:4px;
+                width:100%;
+            }
+
+            .run-animation {
+                -webkit-animation: animation 2.2s;
+                -moz-animation: animation 2.2s;
+                animation: animation 2.2s
+            }
+
+            /* Chrome, Safari, Opera */
+            @-webkit-keyframes animation {
+                from {background: rgb(131, 167, 219);}
+                to {background: rgba(131, 167, 219, 0);}
+            }
+            /* Firefox */
+            @-moz-keyframes animation {
+                from {background: rgb(131, 167, 219);}
+                to {background: rgba(131, 167, 219, 0);}
+            }
+
+            /* IE */
+            @keyframes animation {
+                from {background: rgb(131, 167, 219);}
+                to {background: rgba(131, 167, 219, 0);}
+            }
+
+        </style>
+        <div id="scrollable" class="scrollable">
+            <div id="inner" class="inner">
+                <content></content>
+            </div>
+            <div id="scrollBar" class="scrollBar" style="margin-left:0px width:270px">
+                <div id="scrollPos" class="scrollPos" style="height:100px"></div>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer('tsante-scrollarea', {
+            vanishing: true,
+            forced: true,
+            pos: "left",
+            varScrollWidth: null,
+            scrollTo: function(scrollTop) {
+            this.$.scrollable.scrollTop = scrollTop;
+            },
+            setPosition: function() {
+                if (this.pos == "right") {
+                    var pos = this.$.inner.offsetWidth - this.$.scrollBar.offsetWidth;
+                    this.$.scrollBar.style.left=pos+"px";
+                }
+            },
+            domReady: function() {
+                this.varScrollWidth = getScrollbarWidth();
+                var that = this;
+                this.$.scrollable.style.width = ( this.varScrollWidth + this.scrollWidth )+"px";
+                this.$.scrollable.addEventListener("scroll", function() { that.scrollpos.call(that) }, false);
+                this.$.scrollable.addEventListener("click", function() { that.scrollpos.call(that) }, false);
+                window.addEventListener("resize",function() { that.scrollpos.call(that) },false);
+                this.scrollpos();
+                this.onMutation(this, this.scrollpos);
+            },
+            animScroll: function() {
+                this.$.scrollPos.classList.remove("run-animation");
+                this.$.scrollPos.offsetWidth = this.$.scrollPos.offsetWidth;
+                this.$.scrollPos.classList.add("run-animation");
+
+            },
+            scrollpos: function() {
+                this.setPosition();
+                if (this.$.scrollable.scrollHeight <= this.clientHeight || (this.forced==false && this.varScrollWidth == 0 )) {
+                    this.$.scrollBar.style.display = "none";
+                    return;
+                } else if (this.$.scrollable.scrollHeight > this.clientHeight || (this.forced==false && this.varScrollWidth == 0 )){
+                    this.$.scrollBar.style.display = "block";
+                        if(this.vanishing==true){
+                            this.animScroll();
+                        }
+                        else if(this.vanishing==false){
+                            this.$.scrollPos.style.background= "rgb(131, 167, 219)";
+                        }
+                    var top = this.$.scrollable.scrollTop * this.clientHeight / this.$.scrollable.scrollHeight;
+                    this.$.scrollPos.style.top = top+"px";
+                    var height = this.clientHeight * this.clientHeight / this.$.scrollable.scrollHeight;
+                    this.$.scrollPos.style.height = height+"px";
+
+                }
+                this.onMutation(this, this.scrollpos);
+            }
+        });
+
+
+        function getScrollbarWidth() {
+            var outer = document.createElement("div");
+            outer.style.visibility = "hidden";
+            outer.style.width = "100px";
+            outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+
+            document.body.appendChild(outer);
+
+            var widthNoScroll = outer.offsetWidth;
+            // force scrollbars
+            outer.style.overflow = "scroll";
+
+            // add innerdiv
+            var inner = document.createElement("div");
+            inner.style.width = "100%";
+            outer.appendChild(inner);
+
+            var widthWithScroll = inner.offsetWidth;
+
+            // remove divs
+            outer.parentNode.removeChild(outer);
+
+            return widthNoScroll - widthWithScroll;
+        }
+
+    </script>
+
+</polymer-element>

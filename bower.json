@@ -1,0 +1,27 @@
+{
+  "name": "tsante-scrollarea",
+  "version": "0.0.1",
+  "authors": [
+    "JP-Coffe <dimitri.horvath.telecomsante@gmail.com>"
+  ],
+  "description": "A scrollable area with a custom scrollbar like tablet or MAC scrollbars",
+  "main": "tsante-scrollarea.html",
+  "keywords": [
+    "components",
+    "web components",
+    "polymer",
+    "scrollbar",
+    "scrollarea"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~0.3.3"
+  }
+}

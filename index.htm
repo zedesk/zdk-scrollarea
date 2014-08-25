@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="import" href="tsante-scrollarea.html">
+
+</head>
+
+
+<body>
+
+<tsante-scrollarea vanishing="true" forced="false"style="width:200px;height:250px;border:1px solid DarkGrey" >
+    <ul class="tree"></ul>
+</tsante-scrollarea>
+
+<button onclick="addItems()">Add 10 items</button>
+<button onclick="delItems()">del 10 items</button>
+
+<script>
+    window.addEventListener("DOMContentLoaded", addItems, false);
+    function addItems() {
+        var ul = document.querySelector(".tree");
+        var indx = ul.children.length;
+        var li;
+        for( var i=0;i<10;i++) {
+            li = document.createElement("li");
+            li.innerHTML = "item "+(i+indx);
+            ul.appendChild(li);
+        }
+    }
+
+    function delItems() {
+        var ul = document.querySelector(".tree");
+        var indx = 0;
+        var li;
+        do {
+            li = ul.lastChild;
+            ul.removeChild(li);
+        } while( ++indx < 10);
+    }
+</script>
+</body>
+
