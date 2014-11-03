@@ -3,17 +3,29 @@
 <polymer-element name="zdk-scrollarea" attributes="vanishing forced pos">
     <template>
         <style>
-            :host {
-                position: relative;
-                display:block;
-                overflow:hidden;
-            }
-            .scrollable {
-                overflow-y:scroll;
-                overflow-x: hidden;
-                height:100%;
-                -webkit-overflow-scrolling: touch;
-            }
+			:host {
+				position: relative;
+				display: -ms-flexbox;
+				display:-webkit-flex;
+				display: flex;
+				-webkit-flex-direction: column;
+				-ms-flex-direction: column;
+				flex-direction: column;
+				overflow: hidden;
+			}
+			.inner {
+				flex:1;
+				min-height:100%;
+				display:flex;
+			}
+			.scrollable {
+				overflow-y:scroll;
+				overflow-x: hidden;
+				-webkit-flex:1;
+				-ms-flex:1;
+				flex:1;
+				-webkit-overflow-scrolling: none;
+			}
             .scrollBar {
                 position: absolute;
                 width: 8px;
@@ -81,7 +93,6 @@
             },
             setPosition: function() {
                 if (this.pos == "right" && this.$.scrollBar.classList.contains("left")) { 
-                    //var pos = this.$.inner.offsetWidth - this.$.scrollBar.offsetWidth;
                     this.$.scrollBar.classList.add("right");
 					this.$.scrollBar.classList.remove("left");
                 } 
@@ -90,10 +101,10 @@
 					this.$.scrollBar.classList.remove("right");
                 }
             },
-            ready: function() {
+            domReady: function() {
                 this.varScrollWidth = getScrollbarWidth();
                 var that = this;
-                this.$.scrollable.style.width = ( this.varScrollWidth + this.scrollWidth )+"px";
+                this.$.scrollable.style.width = ( this.varScrollWidth + this.clientWidth )+"px";
                 this.$.scrollable.addEventListener("scroll", function() { that.scrollpos.call(that) }, false);
                 this.$.scrollable.addEventListener("click", function() { that.scrollpos.call(that) }, false);
                 window.addEventListener("resize",function() { that.scrollpos.call(that) },false);
@@ -103,7 +114,6 @@
                 this.onMutation(this, this.scrollpos);
             },
             animScroll: function() {
-                this.$.scrollPos.classList.remove("run-animation");
                 this.$.scrollPos.offsetWidth = this.$.scrollPos.offsetWidth;
                 this.$.scrollPos.classList.add("run-animation");
 
@@ -113,13 +123,16 @@
                     this.$.scrollBar.style.display = "none";
                     return;
                 } else if (this.$.scrollable.scrollHeight > this.clientHeight || (this.forced==false && this.varScrollWidth == 0 )){
-                    this.$.scrollBar.style.display = "block";
-                        if(this.vanishing===true){
-                            this.animScroll();
-                        }
-                        else if(this.vanishing==false){
-                            this.$.scrollPos.style.background= "rgb(131, 167, 219)";
-                        }
+					this.$.scrollPos.classList.remove("run-animation");
+					this.$.scrollable.style.webkitOverflowScrolling = 'touch';
+					this.$.scrollBar.style.display = "block";
+					if( !('ontouchstart' in window) ) {
+						if(this.vanishing === true ){
+							 this.animScroll();
+						} else {
+							this.$.scrollPos.style.background= "rgb(131, 167, 219)";
+						}
+					}
                     var top = this.$.scrollable.scrollTop * this.clientHeight / this.$.scrollable.scrollHeight;
                     this.$.scrollPos.style.top = top+"px";
                     var height = this.clientHeight * this.clientHeight / this.$.scrollable.scrollHeight;
