@@ -1,7 +1,6 @@
+<link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="/bower_components/polymer/polymer.html">
-
-<polymer-element name="tsante-scrollarea" attributes="vanishing forced pos">
+<polymer-element name="zdk-scrollarea" attributes="vanishing forced pos">
     <template>
         <style>
             :host {
@@ -25,6 +24,12 @@
                 opacity: 0.7;
                 display:none;
             }
+			.scrollBar.right {
+				right:0px;
+			}
+			.scrollBar.left {
+				left:0px;
+			}
             .scrollPos {
                 position:absolute;
                 background: rgba(131, 167, 219, 0);
@@ -40,18 +45,18 @@
 
             /* Chrome, Safari, Opera */
             @-webkit-keyframes animation {
-                from {background: rgb(131, 167, 219);}
+                from {background: rgba(131, 167, 219,255);}
                 to {background: rgba(131, 167, 219, 0);}
             }
             /* Firefox */
             @-moz-keyframes animation {
-                from {background: rgb(131, 167, 219);}
+                from {background: rgba(131, 167, 219,255);}
                 to {background: rgba(131, 167, 219, 0);}
             }
 
             /* IE */
             @keyframes animation {
-                from {background: rgb(131, 167, 219);}
+                from {background: rgb(131, 167, 219, 255);}
                 to {background: rgba(131, 167, 219, 0);}
             }
 
@@ -60,33 +65,40 @@
             <div id="inner" class="inner">
                 <content></content>
             </div>
-            <div id="scrollBar" class="scrollBar" style="margin-left:0px width:270px">
+            <div id="scrollBar" class="scrollBar right" style="margin-left:0px width:270px">
                 <div id="scrollPos" class="scrollPos" style="height:100px"></div>
             </div>
         </div>
     </template>
     <script>
-        Polymer('tsante-scrollarea', {
+        Polymer('zdk-scrollarea', {
             vanishing: true,
-            forced: true,
-            pos: "left",
+            forced: false,
+            pos: "right",
             varScrollWidth: null,
             scrollTo: function(scrollTop) {
-            this.$.scrollable.scrollTop = scrollTop;
+            	this.$.scrollable.scrollTop = scrollTop;
             },
             setPosition: function() {
-                if (this.pos == "right") {
-                    var pos = this.$.inner.offsetWidth - this.$.scrollBar.offsetWidth;
-                    this.$.scrollBar.style.left=pos+"px";
+                if (this.pos == "right" && this.$.scrollBar.classList.contains("left")) { 
+                    //var pos = this.$.inner.offsetWidth - this.$.scrollBar.offsetWidth;
+                    this.$.scrollBar.classList.add("right");
+					this.$.scrollBar.classList.remove("left");
+                } 
+				if (this.pos == "left" && this.$.scrollBar.classList.contains("right")) {
+                    this.$.scrollBar.classList.add("left");
+					this.$.scrollBar.classList.remove("right");
                 }
             },
-            domReady: function() {
+            ready: function() {
                 this.varScrollWidth = getScrollbarWidth();
                 var that = this;
                 this.$.scrollable.style.width = ( this.varScrollWidth + this.scrollWidth )+"px";
                 this.$.scrollable.addEventListener("scroll", function() { that.scrollpos.call(that) }, false);
                 this.$.scrollable.addEventListener("click", function() { that.scrollpos.call(that) }, false);
                 window.addEventListener("resize",function() { that.scrollpos.call(that) },false);
+				this.$.scrollBar.style.display = "block";
+				this.$.scrollPos.style.background= "rgba(131, 167, 219,255)";
                 this.scrollpos();
                 this.onMutation(this, this.scrollpos);
             },
@@ -97,13 +109,12 @@
 
             },
             scrollpos: function() {
-                this.setPosition();
                 if (this.$.scrollable.scrollHeight <= this.clientHeight || (this.forced==false && this.varScrollWidth == 0 )) {
                     this.$.scrollBar.style.display = "none";
                     return;
                 } else if (this.$.scrollable.scrollHeight > this.clientHeight || (this.forced==false && this.varScrollWidth == 0 )){
                     this.$.scrollBar.style.display = "block";
-                        if(this.vanishing==true){
+                        if(this.vanishing===true){
                             this.animScroll();
                         }
                         else if(this.vanishing==false){
@@ -116,7 +127,23 @@
 
                 }
                 this.onMutation(this, this.scrollpos);
-            }
+            },
+			forcedChanged: function( oldValue, newValue ) {
+				if( oldValue === newValue ) return;
+				this.forced = newValue;
+				this.setAttribute("forced", this.forced);
+				this.scrollpos();
+			},
+			vanishingChanged: function( oldValue, newValue ) {
+				this.vanishing = newValue;
+				this.setAttribute("vanishing",newValue);
+				this.$.scrollPos.style.background= this.vanishing?"rgba(131, 167, 219, 0)":"rgba(131, 167, 219,255)";
+				this.scrollpos();
+			},
+			posChanged:function( oldValue, newValue ) {
+				this.pos = newValue;
+				this.setPosition();
+			}
         });
 
 

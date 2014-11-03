@@ -1,11 +1,12 @@
 {
-  "name": "tsante-scrollarea",
+  "name": "zdk-scrollarea",
   "version": "0.0.1",
   "authors": [
-    "JP-Coffe <dimitri.horvath.telecomsante@gmail.com>"
+    "JP-Coffe <dimitri.horvath.telecomsante@gmail.com>",
+    "zedesk <dev@zedesk.net>"
   ],
   "description": "A scrollable area with a custom scrollbar like tablet or MAC scrollbars",
-  "main": "tsante-scrollarea.html",
+  "main": "zdk-scrollarea.html",
   "keywords": [
     "components",
     "web components",
@@ -22,6 +23,9 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "~0.3.3"
+    "polymer": "Polymer/polymer#0.4.2"
+  },
+  "devDependencies": {
+    "paper-toggle-button": "Polymer/paper-toggle-button#~0.4.2"
   }
 }
