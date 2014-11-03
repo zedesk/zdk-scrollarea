@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<script src="/bower_components/platform/platform.js"></script>
+<script src="../platform/platform.js"></script>
 
 <html>
 <head>
@@ -7,6 +7,34 @@
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="import" href="zdk-scrollarea.html">
+	<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+	<style>
+	body {
+		font-family:"Verdana","arial";
+	}
+	ul { 
+		list-style: none; 
+		padding:0px;
+		margin:0px;
+		box-sizing:border-box;
+	}
+	li {
+		padding:0px 5px;
+		height:30px;
+		line-height:30px;
+		border:1px solid SlateGray;
+		box-sizing:border-box;
+		border-collapse:collapse;
+	}
+	div.row {
+		display: flex;
+		height: 30px;
+		align-items: center;
+	}
+	label {
+		width:150px;
+	}
+	</style>
 </head>
 
 
@@ -18,9 +46,30 @@
 
 <button onclick="addItems()">Add 10 items</button>
 <button onclick="delItems()">del 10 items</button>
+<div class="row">
+	<label>Forced</label><paper-toggle-button id="forced" checked></paper-toggle-button>
+</div>
+<div class="row">
+	<label>Vanishing</label><paper-toggle-button id="vanishing" ></paper-toggle-button>
+</div>
+<div class="row">
+	<label>Position</label><paper-toggle-button id="pos" checked></paper-toggle-button>
+</div>
 
 <script>
-    window.addEventListener("DOMContentLoaded", addItems, false);
+	document.getElementById("forced").addEventListener("change", function() {
+		document.querySelector("zdk-scrollarea").forced = document.getElementById("forced").checked 
+	}, false);
+	
+	document.getElementById("vanishing").addEventListener("change", function() {
+		document.querySelector("zdk-scrollarea").vanishing = document.getElementById("vanishing").checked 
+	}, false);
+	
+	document.getElementById("pos").addEventListener("change", function() {
+		document.querySelector("zdk-scrollarea").pos = document.getElementById("pos").checked?"right":"left"; 
+	}, false);
+    
+	window.addEventListener("DOMContentLoaded", addItems, false);
     function addItems() {
         var ul = document.querySelector(".tree");
         var indx = ul.children.length;

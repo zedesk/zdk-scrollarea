@@ -24,5 +24,8 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#0.4.2"
+  },
+  "devDependencies": {
+    "paper-toggle-button": "Polymer/paper-toggle-button#~0.4.2"
   }
 }
