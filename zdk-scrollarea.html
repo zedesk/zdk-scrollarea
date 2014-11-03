@@ -90,10 +90,10 @@
 					this.$.scrollBar.classList.remove("right");
                 }
             },
-            ready: function() {
+            domReady: function() {
                 this.varScrollWidth = getScrollbarWidth();
                 var that = this;
-                this.$.scrollable.style.width = ( this.varScrollWidth + this.scrollWidth )+"px";
+                this.$.scrollable.style.width = ( this.varScrollWidth + this.clientWidth )+"px";
                 this.$.scrollable.addEventListener("scroll", function() { that.scrollpos.call(that) }, false);
                 this.$.scrollable.addEventListener("click", function() { that.scrollpos.call(that) }, false);
                 window.addEventListener("resize",function() { that.scrollpos.call(that) },false);
